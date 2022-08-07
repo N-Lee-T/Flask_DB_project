@@ -1,0 +1,163 @@
+<!-- Citation for the following functions: showform(), newStaff(), browseStaff(), showall(), <div id = "browse">, <div id = "insert">
+       # Date: 8/5/22
+       # Copied from /OR/ Adapted from /OR/ Based on: bsg_people_app/templates/people.j2
+       # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+ -->
+
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+    <!-- Adapted from CS340's example code, people.html UI designer -->
+    <title>Staff</title>
+	<script language="JavaScript">
+    function showform(dowhat) {
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'update') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'none';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+	function newStaff() {
+		showform('insert');
+	}
+
+	function browseStaff() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	</script>
+
+</head>
+{% endblock %}
+
+{% block body %}
+<body onload="browseStaff()">
+	<div class="topPage">
+    	<h1>Fakeland Staff</h1>
+	</div>
+	
+    <div id = "browse">
+		<table class="displayTable" border="1" cellpadding="5">
+        {% if data %}
+			<thead>
+				<tr>
+            {% for key in data[0].keys() %}
+					<th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+            {% endfor %} 
+      	</tr>
+			<tbody>
+            {% for item in data %}
+				<tr>
+          {% for key in item.keys() %}
+					<td> {{item[key]}} </td> 
+            {% endfor %}
+					<td><a href="/edit_staff/{{item.staff_id}}" class="btn btn-default">Edit</a></td>
+					<td><a href="/delete_staff/{{item.staff_id}}" class="btn btn-default">Delete</a></td> 
+				</tr> 
+          	{% endfor %} 
+          {% endif %} 
+        </table>   
+		<br>
+		<input class="btn-primary" type="button" value="Add New" onClick="newStaff()"> 
+		</div>	
+
+	<div id="insert">
+		<!-- form to INSERT new data into Staff page-->
+		<form id="insertStaff" action="/staff" method="post">
+			<legend><strong>Add new staff</strong></legend>
+					
+			<fieldset>
+						
+				<input type="hidden" value="{{data[0].staff_id}}" class="form-control" id="staff_id" name="staff_id" required>
+
+				<!-- 'pattern' = Allow for letters, number, spaces, hyphen and apostrophe -->
+				<label >First name</label> 
+				<input type="text" class="form-control" id="first_name" name="first_name" pattern="[A-Z,a-z,0-9,`-'" placeholder="" required>
+
+				<label >Last name</label> 
+				<input type="text" class="form-control" id="last_name" name="last_name" pattern="[A-Z,a-z,0-9,`'" placeholder="" required>
+
+        		<label>Select school</label> 
+				<select class="form-control" id="school" name="school" >
+					<option value=0> </option>
+					{% for school in schools %}
+						{% if school['name'] == schools[0].name %}
+							<option value="{{ school['school_id'] }}" selected> {{ school['name'] }}</option>
+						{% else %}
+							<option value="{{ school['school_id'] }}"> {{ school['name'] }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+
+                <label> Hire date </label> 
+                <input type="date" class="form-control" id="hire_date" name="hire_date">
+
+				<label> Email </label>
+				<input type="email" class="form-control" id="email" name="email" placeholder="email@host.domain" >
+
+        		<label> Phone </label>
+				<input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="000-000-0000">
+
+				<label> Staff role </label>
+				<input type="text" class="form-control" name="role" id="role" pattern="[A-Z]{1,}" placeholder="See code chart" required>
+
+			</fieldset>
+			<br>
+			<table  border="1" cellpadding="5">
+				<h5> Use the following codes for the 'role code' above. If more than one code applies, enter in order (L to R). Must be capital letter(s)! </h5>
+				<thead>
+					<tr>
+						<td>Teacher</td>
+						<td>Coach</td>
+						<td>Club leader</td>
+						<td>Bus driver</td>
+						<td>Janitor</td>
+						<td>Counselor</td>
+						<td>Admin</td>
+						<td>Nurse</td>
+						<td>Principal</td>
+						<td>Substitute</td>
+					</tr>
+				<thead>
+				<tbody>
+					<tr>
+						<td>T</td>
+						<td>Z</td>
+						<td>D</td>
+						<td>B</td>
+						<td>J</td>
+						<td>H</td>
+						<td>A</td>
+						<td>N</td>
+						<td>P</td>
+						<td>S</td>
+					<tr>
+				</tbody>
+			</table>
+			<br>
+
+			<input type="submit" value="Add new Staff" name="Add_Staff" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseStaff()"> 
+
+    	</form>
+	</div>
+
+</body>
+
+{% endblock %}
+

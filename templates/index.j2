@@ -1,0 +1,26 @@
+<!-- Citation: use of jinja2 syntax, templating in Flask
+       # Date: 8/5/22
+       # Copied from /OR/ Adapted from /OR/ Based on: 
+            * Jinja Documentation https://jinja.palletsprojects.com/en/3.1.x/
+            * Learn Flask for Python https://github.com/jakerieger/FlaskIntroduction
+-->
+
+{% extends "base.j2" %}
+ {% block body %}
+<body>
+<div class=topPage>
+    <h1>  Fakeland Public Schools </h1>
+    <br>
+    <h5> This website will allow you to access & edit information about Fakeland schools staff, students, courses, and facilities. </h5>
+    <br>
+    <h5>Click on one of the links below to get started. </h5>
+    <br>
+    <ul>
+        <a href="{{ url_for('schools') }}"><h2>Click for schools</h2></a>
+        <a href="{{ url_for('staff') }}"><h2>Click for staff</h2></a>
+        <a href="{{ url_for('students') }}"><h2>Click for students</h2></a>
+        <a href="{{ url_for('courses') }}"><h2>Click for courses</h2></a>
+    </ul>
+</div>
+</body>
+{% endblock %}

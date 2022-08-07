@@ -1,0 +1,35 @@
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+<title>Edit Courses/Students </title>
+</head>
+{% endblock %}
+
+{% block body %}
+</body>
+ <div id="edit">
+    <form method="POST" id="edit_course_student" action="/edit_course_student/{{data[0].course_student_id}}"> 
+    <!-- FIX THIS FORMATTING -->
+    <!-- <legend>Edit student number: {{data[0].student_id}} in course number: {{data[0].course_id}}</legend> -->
+    <fieldset>
+        <input type="hidden" value="{{data[0].course_student_id}}" class="form-control" id="course_student_id" name="course_student_id" required>
+        <label>Select course</label> 
+        <select class="form-control" id="courses" name="course_id" >
+            {% for course in courses %}
+                <option value="{{ course['course_id'] }}"> {{ course['course_id'] }}: {{ course['subject'] }}</option>
+            {% endfor %}
+        </select>
+        <label>Select student</label> 
+        <select class="form-control" id="students" name="student_id" >
+            {% for student in students %}
+                <option value="{{ student['student_id'] }}"> {{ student['student_id'] }}: {{ student['name'] }}</option>
+            {% endfor %}
+        </select>
+        </fieldset>
+      <br>
+      <input type="submit" id="edit_course_student" name="edit_course_student" class="btn btn-dark" value="Save changes">
+      <a href="/CourseStudent"><button class="btn btn-dark" type="button"> Cancel </button></a>
+  </div>
+</body>
+{% endblock %}

@@ -1,0 +1,16 @@
+#insert, #browse, #edit, #filter {
+    /* padding-left: 5%;
+    margin-bottom: 5%; */
+    padding: 50px;
+}
+
+.topPage {
+    margin-left: 50px;
+    padding-top: 30px;
+}
+
+.bottomPage {
+    padding: 2%;
+    align-items: center;
+    text-align: center;
+}

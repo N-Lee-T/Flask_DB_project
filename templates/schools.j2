@@ -1,0 +1,111 @@
+<!-- Citation for the following functions: showform(), newSchool(), browseSchool(), showall(), <div id = "browse">, <div id = "insert">
+      # Date: 8/5/22
+      # Copied from /OR/ Adapted from /OR/ Based on: bsg_people_app/templates/people.j2
+      # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+    <!-- Adapted from CS340's example code, people.html UI designer -->
+    <title>Schools</title>
+	  <script language="JavaScript">
+
+    function showform(dowhat) {
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else { 
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newSchool() {
+		showform('insert');
+	}
+
+	function browseSchools() {
+		showform('browse');
+	}
+
+	</script>
+
+</head>
+{% endblock %}
+
+{% block body %}
+<body onload="browseSchools()">
+	<div class="topPage">
+    	<h1>Schools</h1>
+	</div>
+	
+    <div id = "browse">
+		<table border="1" cellpadding="5">
+        {% if data %}
+			<thead>
+				<tr>
+            {% for key in data[0].keys() %}
+					<th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+        		{% endfor %} 
+      	</tr>
+			<tbody>
+					{% for item in data %}
+				<tr>
+            {% for key in item.keys() %}
+					<td> {{item[key]}} </td> 
+            	{% endfor %}
+					<td><a href="/delete_school/{{item.school_id}}" class="btn btn-default">Delete</a></td> 
+				</tr> 
+          		{% endfor %} 
+          {% endif %} 
+        </table>   
+		<br>
+		<input class="btn-primary" type="button" value="Add New" onClick="newSchool()"> 
+	</div>	
+
+	<div id="insert">
+		<!-- form to INSERT new data into Schools page-->
+		<form id="insertSchool" action="/schools" method="post">
+			<legend><strong>Add School</strong></legend>
+			<fieldset>
+				<ul>
+					<input type="hidden" value="{{data[0].id}}" class="form-control" id="school_id" name="school_id" required>
+				</ul>	
+				<ul>
+					<label >school name:</label>  <!-- 'pattern' = Allow for letters, number, spaces, hyphen and appostrophe -->
+					<input type="text" class="form-control" id="name" name="name" pattern="[A-Z,a-z,0-9,`-', ]*" placeholder="" required>
+				</ul>
+				<ul>
+					<label >phone:</label>  
+					<input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="000-000-0000" required>
+				</ul>
+				<ul>
+					<label >enrollment:</label>
+					<input type="text" class="form-control" id="enrollment" name="enrollment" pattern="[0-9]+" placeholder="enter value" >
+				</ul>
+				<ul>
+					<label >city:</label>
+					<select class="form-control" id="city" name="city"  placeholder="" required>
+						<option value="Hillsboro">Hillsboro</option>
+						<option value="Rylander">Rylander</option>
+						<option value="Beaverton">Beaverton</option>
+						<option value="Springfield">Springfield</option>
+						<option value="Slums City">Slums City</option>
+						<option value="Happyville">Happyville</option>
+						<option value="Coolstown">Coolstown</option>
+					</select>
+				</ul>
+			</fieldset>
+			<input type="submit" value="Add School" name="Add_School" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseSchools()"> 
+    	</form>
+	</div>
+</body>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+<title>Edit student </title>
+</head>
+{% endblock %}
+
+{% block body %}
+</body>
+ <div id="edit">
+    <form method="POST" id="edit_student" action="/edit_student/{{data[0].student_id}}">  
+      <legend>Edit student {{data[0].student_id}}: {{data[0].first_name}} {{data[0].last_name}}</legend>
+      <fieldset>
+        <input type="hidden" value="{{data[0].student_id}}" class="form-control" id="student_id" name="student_id" required>
+        <label>First</label>
+        <input type="text" class="form-control" id="first_name" name="first_name" pattern="[A-Za-z]{1,}" value="{{data[0].first_name}}" required>
+        <br>
+        <label>Last</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" pattern="[A-Za-z]{1,}" value="{{data[0].last_name}}" required>
+        <br>
+        <label>Grade</label>
+        <input type="text" class="form-control" id="grade" name="grade" pattern="[1-9]{1,2}" value="{{data[0].grade}}" required>
+        <br>
+        <label>Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value="{{data[0].phone}}"> 
+        <br>
+        <label>Email</label>
+        <input type="email" class="form-control" name="email" value="{{data[0].email}}"><p></p>
+        <br>
+				<label>Select school</label> 
+				<select class="form-control" id="school" name="school" >
+					<option value=0></option>
+					{% for school in schools %}
+						{% if school['name'] == schools[0].name %}
+							<option value="{{ school['school_id'] }}" selected> {{ school['name'] }}</option>
+						{% else %}
+							<option value="{{ school['school_id'] }}"> {{ school['name'] }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+      </fieldset>
+      <br>
+      <input type="submit" id="edit_student" name="edit_student" class="btn btn-dark" value="Save changes">
+      <a href="/students"><button class="btn btn-dark" type="button"> Cancel </button></a>
+  </div>
+</body>
+{% endblock %}

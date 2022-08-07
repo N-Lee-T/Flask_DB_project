@@ -1,0 +1,169 @@
+<!-- Citation for the following functions: showform(), newStudent(), updateStudent(), deleteStudent(), browseStudents(), showall(), <div id = "browse">, <div id = "insert">
+      # Date: 8/5/22
+      # Copied from /OR/ Adapted from /OR/ Based on: bsg_people_app/templates/people.j2
+      # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+    <!-- Adapted from CS340's example code, people.html UI designer -->
+    <title>Students</title>
+	<script language="JavaScript">
+    function showform(dowhat) {
+
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('filter').style.display = 'none';
+			
+		} 
+		else if(dowhat == 'filter') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('filter').style.display = 'block';
+
+		} 
+		else { 
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('filter').style.display = 'none';
+
+		}
+	}
+	function newStudent() {
+		showform('insert');
+	}
+
+	function filterStudent(pid) {
+		showform('filter');
+	}
+
+	function browseStudents() {
+		showform('browse');
+	}
+
+	</script>
+
+</head>
+
+{% endblock %}
+
+{% block body %}
+
+<body onload="browseStudents()">
+	<div class="topPage">
+    	<h1>Students</h1>
+
+	</div>
+    <div id="browse">
+	{% if the_school %}
+		<h6> Showing students from: </h6>
+		<h4> {{the_school[0].name}} </h4>
+		<br>
+	{% endif %}
+		<table border="1" cellpadding="5">
+		{% if not data %}
+			<h3> It looks like no students are associated with that school. </h3>
+			<br>
+			<a href="{{ url_for('students') }}"><button class='btn'>Go back</button></a>
+        {% elif data %}
+			<thead>
+				<tr>
+            {% for key in data[0].keys() %}
+					<th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+        		{% endfor %} 
+      			</tr>
+      	</tr>
+			<tbody>
+				{% for item in data %}
+				<tr>
+            		{% for key in item.keys() %}
+					<td> {{item[key]}} </td> 
+            	{% endfor %}
+					<td><a href="/edit_student/{{item.student_id}}" class="btn btn-default">Edit</a></td>
+					<td><a href="/delete_student/{{item.student_id}}" class="btn btn-default">Delete</a></td> 
+				</tr> 
+          	{% endfor %} 
+
+        {% endif %} 
+        </table>   
+		<br>
+		<input class="btn btn-primary" type="button" value="Add New" onClick="newStudent()"> 
+		{% if not the_school %}
+		<input class="btn" type="button" value="Show by school" onClick="filterStudent()"> 
+		{% endif %}
+		<a href="{{ url_for('students') }}"><button class='btn'>Show all</button></a>
+
+		</div>	
+
+	<div id="insert">
+		<form id="insertStudent" action="/students" method="POST">
+			<legend><strong>Add a new student</strong></legend>
+			{% if data %}	
+			<fieldset>
+						
+				<input type="hidden" value="{{data[0].student_id}}" class="form-control" id="student_id" name="student_id" required>
+
+				<label >First name</label> 
+				<input type="text" class="form-control" id="first_name" name="first_name" pattern="[A-Z,a-z,0-9,`-'" placeholder="" required>
+
+				<label >Last name</label> 
+				<input type="text" class="form-control" id="last_name" name="last_name" pattern="[A-Z,a-z,0-9,`'" placeholder="" required>
+
+				<label> Grade </label>
+				<input type="text" class="form-control" name="grade" id="grade" pattern="[0-9]{1,2}" placeholder="0-12" required>
+
+				<label >Phone</label>
+				<input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="000-000-0000" required>
+
+				<label >Email</label>
+				<input type="email" class="form-control" id="email" name="email" placeholder="email@host.domain" >
+
+				<label>Select school</label> 
+				<select class="form-control" id="school" name="school" >
+					<option value=0></option>
+					{% for school in schools %}
+						{% if school['name'] == schools[0].name %}
+							<option value="{{ school['school_id'] }}" selected> {{ school['name'] }}</option>
+						{% else %}
+							<option value="{{ school['school_id'] }}"> {{ school['name'] }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			</fieldset>
+			{% else %}
+			<h1> Whoa </h1>
+			{% endif %}
+			<br>
+			<input type="submit" value="Add new student" name="Add_Student" class="btn btn-primary">
+			<input class="btn" type="button" value="Cancel" onClick="browseStudents()"> 
+    	</form>
+	</div>
+
+	<div id="filter">
+	<table border="1" cellpadding="5">
+        {% if schools %}
+			<thead>
+				<tr>
+            	{% for key in schools[0].keys() %}
+					<th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+        		{% endfor %} 
+      			</tr>
+			<tbody>
+				{% for item in schools %}
+				<tr>
+            		{% for key in item.keys() %}
+					<td> {{item[key]}} </td> 
+            	{% endfor %}
+					<td><a href="students/{{item.school_id}}" class="btn btn-default">Select</a></td>
+				</tr> 
+          	{% endfor %} 
+          {% endif %} 
+        </table>   
+	</div>
+</body>
+
+{% endblock %}
+

@@ -1,0 +1,118 @@
+<!-- Citation for the following functions: showform(), newCourse(), browseCourse(), showall(), <div id = "browse">, <div id = "insert">
+      # Date: 8/5/22
+      # Copied from /OR/ Adapted from /OR/ Based on: bsg_people_app/templates/people.j2
+      # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+    <!-- Adapted from CS340's example code, people.html UI designer -->
+    <title>Courses</title>
+	<script language="JavaScript">
+    	function showform(dowhat) {
+
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newCourse() {
+		showform('insert');
+	}
+
+	function browseCourses() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	</script>
+
+</head>
+  <body onload = "browseCourses()">
+	<div class="topPage">
+    	<h1>Courses Page</h1>
+    </div>
+		
+  <div id = "browse">
+		<table border="1" cellpadding="5">
+        {% if data %}
+				
+			<thead>
+				<tr>
+            	{% for key in data[0].keys() %}
+					<th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+        		{% endfor %} 
+      	</tr>
+				
+			<tbody>
+				{% for item in data %}
+				<tr>
+            		{% for key in item.keys() %}
+					<td> {{item[key]}} </td> 
+            	{% endfor %}
+				<!--	<td><a href="/edit_course/{{item.course_id}}" class="btn btn-default">Edit</a></td> -->
+					<td><a href="/delete_course/{{item.course_id}}" class="btn btn-default">Delete</a></td> 
+				</tr> 
+          	{% endfor %} 
+          {% endif %} 
+      </table>   
+		<br>
+		<input class="btn-primary" type="button" value="Add New" onClick="newCourse()"> 
+	</div>	
+
+	<div id="insert">
+	<form id="insertCourse" action="/courses" method="post">
+		<legend><strong>Add Course</strong></legend>
+		<fieldset>
+			<ul>          
+				<input type="hidden" value="{{data[0].id}}" class="form-control" id="school_id" name="school_id" required>
+			</ul>
+			<ul>  
+				<label >Subject:</label> 				
+				<input type="text" class="form-control" id="subject" name="subject" pattern="[A-Z,a-z,0-9,`-', ]*" placeholder="" required>
+			</ul>	
+			<ul>  
+				<label>Select school</label> 
+				<select class="form-control" id="school" name="school" >
+					{% for school in schools %}
+						{% if school['name'] == schools[0].name %}
+							<option value="{{ school['school_id'] }}" selected> {{ school['name'] }}</option>
+						{% else %}
+							<option value="{{ school['school_id'] }}"> {{ school['name'] }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
+			</ul>
+			<ul>  
+				<label >Max Class Size:</label>
+				<input type="number" min="1" class="form-control" id="max_class_size" name="max_class_size" pattern="[1-9]+" placeholder="" >
+			</ul>
+			<ul>  
+				<label >Enrollment:</label>
+				<input type="number" class="form-control" id="enrollment" name="enrollment" pattern="[0-9]+" placeholder="" >
+			</ul>
+		</fieldset>
+			<input type="submit" value="Add Course" name="Add_Course" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseCourses()"> 
+    </form>
+	</div>
+  </body>
+ {% endblock %}

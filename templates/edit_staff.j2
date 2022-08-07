@@ -1,0 +1,88 @@
+{% extends "base.j2" %}
+
+{% block head %}
+<head>
+<title>Edit staff </title>
+</head>
+{% endblock %}
+
+{% block body %}
+</body>
+  <div id="edit">
+    <form method="POST" id="edit_staff" action="/edit_staff/{{data[0].staff_id}}">  
+      <h2>Edit Staff</h2>
+      <fieldset>
+        <input type="hidden" value="{{data[0].staff_id}}" class="form-control" id="staff_id" name="staff_id" required>
+        <br>
+        <label> First </label>  
+        <input type="text" class="form-control" name="first_name" id="first_name" pattern="[A-Za-z]{1,}" value="{{data[0].first_name}}" required>
+        <br>
+        <label> Last </label>  
+        <input type="text" class="form-control" name="last_name" id="last_name" pattern="[A-Za-z]{1,}" value="{{data[0].last_name}}" required>
+        <br>
+        <label>Select school</label> 
+        <select class="form-control" id="school" name="school" >
+            <option value=0> </option>
+            {% for school in schools %}
+                {% if school['name'] == schools[0].name %}
+                    <option value="{{ school['school_id'] }}" selected> {{ school['name'] }}</option>
+                {% else %}
+                    <option value="{{ school['school_id'] }}"> {{ school['name'] }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <label> Select or enter hire date </label>  
+        <input type="date" class="form-control" id="hire_date" name="hire_date" value="{{data[0].hire_date}}">
+        <br>      
+        <label> Email </label>  
+        <input type="email" class="form-control" id="email" name="email"  value="{{data[0].email}}"><p></p>
+        <br>
+        <label> Phone </label> 
+        <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value="{{data[0].phone}}"> 
+        <br>
+        <label> Role code - see chart below </label> 
+        <input type="text" class="form-control" name="role" id="role" pattern="[A-Z]{1,}" value="{{data[0].role}}" required>
+      </fieldset>
+      <br>
+      <input class="btn btn-dark" type="submit" name="edit_staff" id="edit_staff" value="Save changes">
+      <a href="/staff"><button class="btn btn-dark" type="button"> Cancel </button></a>
+
+      <br>
+      <br>
+ 			<table  border="1" cellpadding="5">
+ 				<h5> Use the following codes for the 'role code' above. If more than one code applies, enter in order (L to R). Must be capital letter(s)! </h5>
+ 				<thead>
+ 					<tr>
+ 						<td>Teacher</td>
+ 						<td>Coach</td>
+ 						<td>Club leader</td>
+ 						<td>Bus driver</td>
+ 						<td>Janitor</td>
+ 						<td>Counselor</td>
+ 						<td>Admin</td>
+ 						<td>Nurse</td>
+ 						<td>Principal</td>
+ 						<td>Substitute</td>
+ 					</tr>
+ 				<thead>
+ 				<tbody>
+ 					<tr>
+ 						<td>T</td>
+ 						<td>Z</td>
+ 						<td>D</td>
+ 						<td>B</td>
+ 						<td>J</td>
+ 						<td>H</td>
+ 						<td>A</td>
+ 						<td>N</td>
+ 						<td>P</td>
+ 						<td>S</td>
+ 					<tr>
+ 				</tbody>
+ 			</table>
+ 			<br>
+
+  </div><!--edit div END-->
+</body>
+{% endblock %}

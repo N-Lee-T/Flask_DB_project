@@ -1,0 +1,102 @@
+{% extends "base.j2" %}
+
+{% block head %}
+
+<head>
+    <title>Courses & Student Details </title>
+	  <script language="JavaScript">
+
+    function showform(dowhat) {
+
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} 
+		else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} 
+		else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newCourseStudent() {
+		showform('insert');
+	}
+
+	function browseCourseStudent() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	</script>
+
+</head>
+{% endblock %}
+
+{% block body %}
+  <body onload = "browseCourseStudent()">
+	<div class="topPage">
+	<h1>Students & Courses Details</h1>
+	</div>
+    <div id="browse">
+      <table border="1" cellpadding="5">
+        {% if data %}
+            <thead>
+              <tr>
+                {% for key in data[0].keys() %}
+                <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+                {% endfor %} 
+              </tr>
+            <tbody>
+          	{% for item in data %}
+            <tr>
+                {% for key in item.keys() %}
+                <td> {{item[key]}} </td> 
+            	{% endfor %}
+				<td><a href="/edit_course_student/{{item.course_student_id}}" class="btn btn-default">Edit</a></td>
+				<td><a href="/delete_course_student/{{item.course_student_id}}" class="btn btn-default">Delete</a></td>
+            </tr> 
+            {% endfor %} 
+        {% endif %}
+      </table>   
+	  <p>&nbsp;</p>
+	  	<input value="Add new relationship" name="Add_Student_Course" class="btn btn-primary" onClick="newCourseStudent()" style="margin:.5rem">
+	</div>	
+
+	<div id="insert">
+		<form id="insertCourseStudent" action="/CourseStudent" method="post">
+			<legend><strong>Add Course Student Details</strong></legend>
+    		<fieldset>
+				<input type="hidden" value="{{data[0].id}}" class="form-control" id="courses" name="courses" required>
+				<label>Select course</label> 
+				<select class="form-control" id="courses" name="course_id" >
+					{% for course in courses %}
+						<option value="{{ course['course_id'] }}"> {{ course['subject'] }}</option>
+					{% endfor %}
+				</select>
+				<label>Select student</label> 
+				<select class="form-control" id="students" name="student_id" >
+					{% for student in students %}
+						<option value="{{ student['student_id'] }}"> {{ student['name'] }}</option>
+					{% endfor %}
+				</select>
+			</fieldset>
+
+			<input type="submit" value="Add Course-Student relationship" name="Add_CourseStudent" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseCourseStudent()"> 
+    	</form>
+	</div>
+    
+  </body>
+{% endblock %}

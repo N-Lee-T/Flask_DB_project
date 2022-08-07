@@ -1,0 +1,110 @@
+<!-- Citation for the following functions: showform(), newCourseStaff(), browseCourseStaff(), showall(), <div id = "browse">, <div id = "insert">
+      # Date: 8/5/22
+      # Copied from /OR/ Adapted from /OR/ Based on: bsg_people_app/templates/people.j2
+      # Source URL: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+{% extends "base.j2" %}
+
+{% block head %}
+
+<head>
+    <!-- Adapted from CS340's example code, people.html UI designer -->
+    <title>Courses & Teacher Details </title>
+  	<script language="JavaScript">
+
+    function showform(dowhat) {
+
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newCourseStaff() {
+		showform('insert');
+	}
+
+	function browseCourseStaff() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	</script>
+
+</head>
+{% endblock %}
+
+{% block body %}
+<body onload = "browseCourseStaff()">
+	<div class="topPage">
+	<h1>Staff & Courses Details</h1>
+	</div>
+    <div id="browse">
+      <table border="1" cellpadding="5">
+        {% if data %}
+            <thead>
+              <tr>
+                {% for key in data[0].keys() %}
+                  <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+                {% endfor %} 
+              </tr>
+            <tbody>
+            	{% for item in data %}
+              	<tr>
+                	{% for key in item.keys() %}
+                	<td> {{item[key]}} </td> 
+                	{% endfor %}
+					<td><a href="/delete_course_staff/{{item.course_staff_id}}" class="btn btn-default">Delete</a></td> 
+              	</tr> 
+                {% endfor %} 
+        {% endif %}
+      	</table>   
+	  	<br>
+	  	<input value="Add new relationship" name="Add_Staff_Course" class="btn btn-primary" onClick="newCourseStaff()" style="margin:.5rem">
+
+	</div>	
+
+		<div id="insert">
+		<form id="insertCourseStaff" action="/CourseStaff" method="post">
+			<legend><strong>Add Course Teacher Details</strong></legend>
+    		<fieldset>
+				<input type="hidden" value="{{data[0].id}}" class="form-control" id="courses" name="courses" required>
+				<label >Course</label>
+				<select class="form-control" id="course" name="course_id"  placeholder="" required>
+					{% for course in courses %}
+						<option value="{{ course['course_id'] }}"> {{ course['subject'] }}</option>
+					{% endfor %}
+				</select>
+				<label >Teacher</label>
+				<select class="form-control" id="staff" name="staff_id"  placeholder="" required>
+					{% for staff in staff %}
+						<option value="{{ staff['staff_id'] }}"> {{ staff['name'] }} </option>
+					{% endfor %}
+				</select>
+			</fieldset>
+
+			<input type="submit" value="Add CourseStaff" name="Add_CourseStaff" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseCourseStaff()"> 
+			
+    	</form>
+	</div>
+</body>
+{% endblock %}
+
